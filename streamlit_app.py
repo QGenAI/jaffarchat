@@ -94,19 +94,32 @@ if prompt := st.chat_input("Enter your prompt here..."):
 
     # Fetch response from Groq API
     try:
+         # Define custom pre-prompt
+        pre_prompt = {
+            "role": "system",
+            "content": (
+                "You are a helpful and friendly math tutor. "
+                "Answer only math-related questions. "
+                "Explain your responses in simple, age-appropriate language for middle school students. "
+                "Do not respond to unrelated topics. Keep a positive and supportive tone."
+            )
+        }
+
+        # Construct messages with system prompt prepended
+        messages_with_context = [pre_prompt] + [
+            {
+                "role": m["role"],
+                "content": m["content"]
+            }
+            for m in st.session_state.messages
+        ]
+
         chat_completion = client.chat.completions.create(
             model=model_option,
-            messages=[
-                {
-                    "role": m["role"],
-                    "content": m["content"]
-                }
-                for m in st.session_state.messages
-            ],
+            messages=messages_with_context,
             max_tokens=max_tokens,
             stream=True
         )
-
         # Use the generator function with st.write_stream
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
