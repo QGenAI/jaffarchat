@@ -6,7 +6,7 @@ from groq import Groq
 
 
 st.set_page_config(page_icon="💬", layout="wide",
-                   page_title="LLM Chat Demo...")
+                   page_title="LLM Math Tutor...")
 
 
 def icon(emoji: str):
